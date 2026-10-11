@@ -1,28 +1,43 @@
-# Node
+# Dependencies
 node_modules/
-*.log
 
-# SQLite (dev data)
-backend/data/
+# Build output (Vite)
+frontend/dist/
+dist/
+
+# Vite cache
+frontend/.vite/
+.vite/
+
+# Environment — never commit secrets or real env files
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Keep example env files
+!.env.example
+!frontend/.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Residual backend artifacts (should never be in this frontend-only repo)
+backend/
 *.db
 *.db-wal
 *.db-shm
+data/
 
-# Env
-.env
-.env.local
-
-# Build
-frontend/dist/
-frontend/.vite/
-
-# Loose dev / temp artifacts
-_ts2.mjs
-*.err
-.dist/
-
-# Editor / OS
+# OS / editor
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
+
+# Temp / misc
+*.err
+.dist/
+_ts2.mjs

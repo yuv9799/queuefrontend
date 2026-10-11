@@ -1,69 +1,48 @@
-# KIMS Queue Management System (Bhubaneswar)
+# KIMS Queue Frontend
 
-Digital queue/token management for Kalinga Institute of Medical Sciences. Patients get tokens across departments (OPD, Pharmacy, Lab, Radiology, Billing, Emergency); staff operate queues live; a TV board shows real-time status; admins manage structure and view analytics.
+React + Vite + Tailwind frontend for the KIMS Queue Management System (Bhubaneswar).
+
+This repository is the **frontend only**. The backend (Express + Socket.io + SQLite)
+lives in the separate [`queuebackend`](https://github.com/yuv9799/queuebackend) repo and
+is hosted on a persistent Node host.
 
 ## Stack
-- **Backend**: Node.js (v22.5+) · Express · built-in `node:sqlite` (no native deps) · Socket.io
-- **Frontend**: React 18 · Vite 5 · Tailwind CSS 3 · Recharts · socket.io-client
+- React 18, Vite 5, Tailwind CSS 3, Recharts, socket.io-client
+- React Router (`BrowserRouter`) with an SPA fallback so deep links work on refresh
 
-## Quick start
+## API base URL (frontend ⇄ backend)
+All REST and Socket.io traffic reads the backend origin from the build-time
+environment variable **`VITE_API_URL`** (see `frontend/src/services/api.js` and
+`frontend/src/services/socket.js`). **There are no hardcoded production URLs in the
+source.**
 
+- Local dev default: `http://localhost:8080` (used only when `VITE_API_URL` is unset)
+- Production (Vercel): set **`VITE_API_URL`** in the Vercel project to your deployed
+  backend origin, e.g. `https://your-backend-host.example.com` (no trailing slash).
+
+> `VITE_`-prefixed variables are embedded in the client bundle, so never put secrets in
+> `VITE_API_URL` or any other `VITE_` variable.
+
+## Local development
 ```bash
-# 1. Install backend (DB): Node's built-in SQLite needs NO install
-cd backend && npm install
-
-# 1b. Configure the backend for local development
-cp .env.example .env
-printf '\nNODE_ENV=development\nJWT_SECRET=%s\n' "$(openssl rand -base64 48)" >> .env
-
-# 2. Install frontend
-cd .. && cd frontend && npm install
-
-# 3. Seed KIMS demo data (creates data/queue.db)
-cd ../backend && npm run seed
-
-# 3b. (Optional) Seed 100 demo reviews for the Reviews & analytics UI
-npm run seed:reviews
-
-# 4. Run backend  -> http://localhost:8080
-npm run dev
-
-# 5. In a second terminal run frontend -> http://localhost:5173
-cd ../frontend && npm run dev
+cd frontend
+npm install
+cp .env.example .env.local   # optional: VITE_API_URL=http://localhost:8080
+npm run dev                  # http://localhost:5173
 ```
 
-Or from the repo root after installing root deps:
+## Production build
 ```bash
-npm install              # installs root + concurrently
-npm run install:all      # installs backend + frontend
-npm run seed
-npm run dev              # runs both backend & frontend together
+cd frontend
+npm ci
+VITE_API_URL=https://your-backend-host.example.com npm run build
 ```
+Built output is written to `frontend/dist`.
 
-## Demo accounts
-| Role      | Email            | Password       |
-|-----------|------------------|----------------|
-| Admin     | admin@kims.in    | admin123       |
-| Officer   | officer@kims.in  | officer123     |
-| Reception | reception@kims.in| reception123   |
-
-## Tests
-```bash
-cd backend && npm test
-```
-
-## Pages
-- `/` — Public token kiosk (department → service area) + Live Queue status + Reviews & Feedback
-- `/status` — Track a token live (search by number, now-serving + estimated wait)
-- `/live` — Live TV queue board (filterable by department)
-- `/departments` — Browse departments and their service areas
-- `/help` — Help / FAQ accordion
-- `/console` — Staff queue console (Next / Call / Hold / Skip / Complete / Cancel)
-- `/admin` — Admin dashboard + analytics + structure CRUD + **review moderation**
-- `/login` — Staff login
-
-## Layout
-```
-backend/   Express API + SQLite + Socket.io (models, routes, sockets, seed, tests)
-frontend/  React + Vite + Tailwind (pages, components, context, services)
-```
+## Vercel deployment
+1. Create a Vercel project from this repo (`yuv9799/queuefrontend`), production branch `main`.
+2. Use Framework Preset **Vite** (the repo-root `vercel.json` also sets the install/build
+   command, output directory, and an SPA rewrite so routes like `/status` work on refresh).
+3. Add the environment variable **`VITE_API_URL`** = your deployed backend URL.
+4. Deploy. You do **not** need a GitHub Pages workflow for Vercel, but one is included
+   (`.github/workflows/deploy.yml`) in case you also want a GitHub Pages build.

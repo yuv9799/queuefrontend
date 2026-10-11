@@ -1,0 +1,28 @@
+# Node
+node_modules/
+*.log
+
+# SQLite (dev data)
+backend/data/
+*.db
+*.db-wal
+*.db-shm
+
+# Env
+.env
+.env.local
+
+# Build
+frontend/dist/
+frontend/.vite/
+
+# Loose dev / temp artifacts
+_ts2.mjs
+*.err
+.dist/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
