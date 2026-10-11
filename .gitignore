@@ -2,11 +2,9 @@
 node_modules/
 
 # Build output (Vite)
-frontend/dist/
 dist/
 
 # Vite cache
-frontend/.vite/
 .vite/
 
 # Environment — never commit secrets or real env files
@@ -18,7 +16,6 @@ frontend/.vite/
 
 # Keep example env files
 !.env.example
-!frontend/.env.example
 
 # Logs
 *.log

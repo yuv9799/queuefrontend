@@ -12,8 +12,8 @@ is hosted on a persistent Node host.
 
 ## API base URL (frontend ⇄ backend)
 All REST and Socket.io traffic reads the backend origin from the build-time
-environment variable **`VITE_API_URL`** (see `frontend/src/services/api.js` and
-`frontend/src/services/socket.js`). **There are no hardcoded production URLs in the
+environment variable **`VITE_API_URL`** (see `src/services/api.js` and
+`src/services/socket.js`). **There are no hardcoded production URLs in the
 source.**
 
 - Local dev default: `http://localhost:8080` (used only when `VITE_API_URL` is unset)
@@ -25,7 +25,6 @@ source.**
 
 ## Local development
 ```bash
-cd frontend
 npm install
 cp .env.example .env.local   # optional: VITE_API_URL=http://localhost:8080
 npm run dev                  # http://localhost:5173
@@ -33,11 +32,10 @@ npm run dev                  # http://localhost:5173
 
 ## Production build
 ```bash
-cd frontend
 npm ci
 VITE_API_URL=https://your-backend-host.example.com npm run build
 ```
-Built output is written to `frontend/dist`.
+Built output is written to `dist`.
 
 ## Vercel deployment
 1. Create a Vercel project from this repo (`yuv9799/queuefrontend`), production branch `main`.
