@@ -44,3 +44,15 @@ Built output is written to `dist`.
 3. Add the environment variable **`VITE_API_URL`** = your deployed backend URL.
 4. Deploy. You do **not** need a GitHub Pages workflow for Vercel, but one is included
    (`.github/workflows/deploy.yml`) in case you also want a GitHub Pages build.
+## Production status (Vercel)
+
+- Deployed frontend: `https://queuefrontend-eiyom3ypt-yuviraj.vercel.app/`
+- The backend (`queuebackend`) must run on a **persistent Node host** (Render /
+  Railway / Fly / VPS). It is **not** Vercel-serverless compatible (Socket.io +
+  durable SQLite). See the backend repo's `DEPLOY_BACKEND.md`.
+- **Set `VITE_API_URL`** in Vercel → Project → Settings → Environment Variables
+  (Production) to the deployed backend origin — e.g. `https://your-backend.onrender.com`
+  (no trailing slash) — then **trigger a new Production build**. Vite embeds
+  `VITE_API_URL` at build time, so changing it without redeploying has no effect.
+- Until `VITE_API_URL` is set, the bundle uses `null` for the API base and shows
+  "Backend API is not configured.", which is exactly the current production symptom.
