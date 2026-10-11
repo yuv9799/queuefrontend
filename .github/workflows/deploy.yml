@@ -38,6 +38,25 @@ jobs:
         working-directory: frontend
         run: npm run build
 
+      - name: Ensure GitHub Pages is enabled (build via Actions)
+        # Best-effort fix for "Get Pages site failed / Not Found (404)" from
+        # actions/configure-pages: if Pages was never enabled (or its source was
+        # reset), create/configure it to build from GitHub Actions. Non-fatal —
+        # a 409 means Pages is already enabled and we simply continue.
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl -fsS -X POST \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d '{"build_type":"workflow"}' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" \
+            >/dev/null 2>&1 \
+            && echo "::notice::GitHub Pages enabled for workflow builds." \
+            || echo "::warning::GitHub Pages already configured or auto-config not permitted (requires repo admin). Continuing."
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
